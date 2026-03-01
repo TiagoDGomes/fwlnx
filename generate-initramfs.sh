@@ -102,5 +102,5 @@ rsync -aHAX ../systemroot/ ./
 
 
 echo "[BUILD] Gerando initramfs completo..."
-fakeroot sh -c 'find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../boot-partition/initramfs.cpio.gz'
+fakeroot sh -c 'find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../build/initramfs.cpio.gz'
 cd ..

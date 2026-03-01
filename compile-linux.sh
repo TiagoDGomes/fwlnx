@@ -3,7 +3,7 @@ set -euo pipefail
 
 KERNEL_VERSION="v6.18.15"
 
-mkdir -p src boot-partition initramfs
+mkdir -p src build initramfs
 
 cd src
 
@@ -245,7 +245,7 @@ $KCFG --enable CONFIG_DEVTMPFS_MOUNT
 make olddefconfig
 make -j$(nproc)
 
-cp arch/x86/boot/bzImage ../../boot-partition/
+cp arch/x86/boot/bzImage ../../build/
 
 make modules_install INSTALL_MOD_PATH=../../initramfs
 KREL=$(make kernelrelease)

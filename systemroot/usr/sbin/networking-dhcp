@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd  /sys/class/net/
+for i in *
+do 
+  ip link set $i up
+done
+
+udhcpc -n 2>&1 > /dev/null
+ip address
+exit 0

@@ -1,0 +1,5 @@
+initramfs/*
+boot-partition/*
+src/*
+systemroot/etc/dropbear/*_host_key*
+

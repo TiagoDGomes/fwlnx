@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-KERNEL_VERSION="v6.18.15"
+KERNEL_VERSION="6.18.15"
 
 mkdir -p src build initramfs
+
+INITRAMFS_DIR=$(pwd)/initramfs
 
 cd src
 
 if [ ! -d linux ]; then
-    git clone --depth 1 --branch ${KERNEL_VERSION} https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+    git clone --depth 1 --branch v${KERNEL_VERSION} https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
 fi
 
 cd linux
@@ -55,8 +57,11 @@ $KCFG --enable CONFIG_NF_TABLES
 $KCFG --enable CONFIG_NF_TABLES_INET
 $KCFG --enable CONFIG_NF_TABLES_IPV4
 $KCFG --enable CONFIG_NF_TABLES_IPV6
+$KCFG --enable CONFIG_NETFILTER_XTABLES
 $KCFG --enable CONFIG_NFT_CT
+$KCFG --enable CONFIG_NFT_COUNTER
 $KCFG --enable CONFIG_NFT_NAT
+$KCFG --enable CONFIG_NFT_REDIR
 $KCFG --enable CONFIG_NFT_REJECT
 $KCFG --enable CONFIG_NFT_MASQ
 $KCFG --enable CONFIG_NFT_LOG
@@ -247,8 +252,8 @@ make -j$(nproc)
 
 cp arch/x86/boot/bzImage ../../build/
 
-make modules_install INSTALL_MOD_PATH=../../initramfs
+make modules_install INSTALL_MOD_PATH=$INITRAMFS_DIR
 KREL=$(make kernelrelease)
-depmod -b ../../initramfs $KREL
+depmod -b $INITRAMFS_DIR $KREL
 
-echo "Kernel Enterprise Firewall (sem Suricata) build concluído."
+rm $INITRAMFS_DIR/lib/modules/${KERNEL_VERSION}/build
